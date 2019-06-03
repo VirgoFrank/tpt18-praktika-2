@@ -5,8 +5,14 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snake_Game"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
+        Title="Snake Game" Height="450" Width="800" MouseDown="Window_MouseDown" KeyDown="Window_KeyDown">
     <Grid>
-        
+        <Canvas Background="Green">
+
+            <Rectangle Height="80" Width="200" Stroke="Black" StrokeThickness="10" Fill="Red" Canvas.Left="36" Canvas.Top="28"
+                       Name="RISTKÜLIK">
+            </Rectangle>
+
+        </Canvas>
     </Grid>
 </Window>

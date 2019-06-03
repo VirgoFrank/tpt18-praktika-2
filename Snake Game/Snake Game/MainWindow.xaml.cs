@@ -24,5 +24,58 @@ namespace Snake_Game
         {
             InitializeComponent();
         }
+
+        private void Window_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            if (e.LeftButton == MouseButtonState.Pressed)
+            {
+                double currentleft = Canvas.GetLeft(RISTKÜLIK);
+                double newleft = currentleft + 20;
+                Canvas.SetLeft(RISTKÜLIK, newleft);
+            }
+
+            if (e.RightButton == MouseButtonState.Pressed)
+            {
+                double currentleft = Canvas.GetLeft(RISTKÜLIK);
+                double newleft = currentleft - 20;
+                Canvas.SetLeft(RISTKÜLIK, newleft);
+            }
+            if (e.MiddleButton == MouseButtonState.Pressed)
+            {
+                double currentleft = Canvas.GetTop(RISTKÜLIK);
+                double newleft = currentleft + 20;
+                Canvas.SetTop(RISTKÜLIK, newleft);
+            }
+
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e)
+        {
+            if ( e.Key == Key.Right ||e.Key == Key.D)
+            {
+                double currentleft = Canvas.GetLeft(RISTKÜLIK);
+                double newleft = currentleft + 20;
+                Canvas.SetLeft(RISTKÜLIK, newleft);
+            }
+            if (e.Key == Key.Left || e.Key == Key.A)
+            {
+                double currentleft = Canvas.GetLeft(RISTKÜLIK);
+                double newleft = currentleft - 20;
+                Canvas.SetLeft(RISTKÜLIK, newleft);
+            }
+            if (e.Key == Key.Up || e.Key == Key.W)
+            {
+                double currentleft = Canvas.GetTop(RISTKÜLIK);
+                double newleft = currentleft - 20;
+                Canvas.SetTop(RISTKÜLIK, newleft);
+            }
+            if (e.Key == Key.Down || e.Key == Key.S)
+            {
+                double currentleft = Canvas.GetTop(RISTKÜLIK);
+                double newleft = currentleft + 20;
+                Canvas.SetTop(RISTKÜLIK, newleft);
+            }
+
+        }
     }
 }
