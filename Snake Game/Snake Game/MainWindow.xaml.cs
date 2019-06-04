@@ -77,22 +77,14 @@ namespace Snake_Game
         }
 
         private void Window_MouseDown(object sender, MouseButtonEventArgs e)
-        {
-           
-           
+        {           
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                toit();
-               
-            }
-
-           
-
+                toit();               
+            }                     
         }
         private void Movesnake(bool up, bool down, bool right, bool left)
         {
-
-
             if (up || down)
             {
                 double currentTop = Canvas.GetTop(RISTKÜLIK);
@@ -110,7 +102,6 @@ namespace Snake_Game
                 Canvas.SetLeft(RISTKÜLIK, newLeft);
             }
         }
-
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
