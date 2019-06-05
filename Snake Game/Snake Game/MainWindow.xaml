@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Snake_Game"
         mc:Ignorable="d"
-        Title="Snake Game"  MouseDown="Window_MouseDown" KeyDown="Window_KeyDown" ResizeMode="NoResize" 
+        Title="Snake Game" ResizeMode="NoResize" 
         SizeToContent="WidthAndHeight" Topmost="True">
     <Grid Name="mygrid">
         <Grid.ColumnDefinitions>
@@ -13,14 +13,21 @@
             <ColumnDefinition Width="5*"/>
         </Grid.ColumnDefinitions>
         <Grid.RowDefinitions>
-            <RowDefinition Height="8*"/>
-            <RowDefinition Height="411*"/>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
-        <Canvas Background="Green" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="canvas" Height="450" Width="800">
+        <StackPanel Grid.Row="0" Orientation="Horizontal">
+            <Label Name="lbldirection">
+            </Label>
+
+        </StackPanel>
+        <Canvas Grid.Row="1" Background="Green" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="board" Height="450" Width="800">
         </Canvas>
         <Canvas>
             <Rectangle Height="50" Width="50" Stroke="Black" StrokeThickness="10" Fill="Red"
-                       Name="RISTKÜLIK" RenderTransformOrigin="0.519,0.555"/>
+                       Name="RISTKÜLIK" RenderTransformOrigin="0.519,0.555" Canvas.Top="10" Canvas.Left="1"/>
+          
+
         </Canvas>
     </Grid>
 </Window>
