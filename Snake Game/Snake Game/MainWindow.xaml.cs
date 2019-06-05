@@ -33,6 +33,9 @@ namespace Snake_Game
             InitializeComponent();
            Drawboard();
           
+            int top = rnd.Next(8);
+            int left = rnd.Next(16);
+            toit(top, left);
             Canvas.SetLeft(RISTKÜLIK, 0);
             Canvas.SetTop(RISTKÜLIK, 0);
         }
@@ -58,7 +61,7 @@ namespace Snake_Game
             }
         }
 
-        public void toit()
+       public int toit(int top, int left)
         {
             Ellipse söök = new Ellipse();
 
@@ -66,13 +69,15 @@ namespace Snake_Game
             söök.Width = cellsize;
             söök.Height = cellsize;
             söök.Fill = Brushes.Red;
-            int top = rnd.Next(8);
-            int left = rnd.Next(16);
+           // int top = rnd.Next(8);
+          //  int left = rnd.Next(16);
             Canvas.SetTop(söök, top*50);
             Canvas.SetLeft(söök, left*50);
+            int k = top * 50;
         
             canvas.Children.Add(söök);
-          
+            return top;
+           
 
         }
 
@@ -82,29 +87,29 @@ namespace Snake_Game
            
             if (e.LeftButton == MouseButtonState.Pressed)
             {
-                toit();
+                //toit();
                
             }
 
            
 
         }
-        private void Movesnake(bool up, bool down, bool right, bool left)
+        private void Movesnake(direction direction)
         {
 
 
-            if (up || down)
+            if (direction == direction.up || direction == direction.down)
             {
                 double currentTop = Canvas.GetTop(RISTKÜLIK);
-                double newtop = up
+                double newtop = direction == direction.up
                     ? currentTop - cellsize
                     : currentTop + cellsize;
                 Canvas.SetTop(RISTKÜLIK, newtop);
             }
-            if (left || right)
+            if (direction == direction.left || direction == direction.right)
             {
                 double currentLeft = Canvas.GetLeft(RISTKÜLIK);
-                double newLeft = left
+                double newLeft = direction ==direction.right
                     ? currentLeft + cellsize
                     : currentLeft - cellsize;
                 Canvas.SetLeft(RISTKÜLIK, newLeft);
@@ -114,13 +119,24 @@ namespace Snake_Game
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
+            direction direction;
+            if (e.Key == Key.Up || e.Key == Key.W)
+                direction = direction.up;
+            else if (e.Key == Key.Down || e.Key == Key.S)
+                direction = direction.down;
+            else if (e.Key == Key.Left || e.Key == Key.A)
+                direction = direction.left;
+            else if (e.Key == Key.Right || e.Key == Key.D)
+                direction = direction.right;
+            else
+                return;
+            Movesnake(direction);
 
-            bool up = e.Key == Key.Up;
-            bool down = e.Key == Key.Down;
-            bool right = e.Key == Key.Right;
-            bool left = e.Key == Key.Left;
+            Ellipse söök = new Ellipse();
 
-            Movesnake(up, down, left, right);
+
+            // if (Canvas.GetLeft(RISTKÜLIK) == )
+
             /*
             if (Canvas.GetTop(RISTKÜLIK) < 0 || Canvas.GetTop(RISTKÜLIK) > 400 || Canvas.GetLeft(RISTKÜLIK) > 750 || Canvas.GetLeft(RISTKÜLIK) < 0 || e.Key == Key.R)
              {
@@ -146,6 +162,13 @@ namespace Snake_Game
             {
                 Canvas.SetLeft(RISTKÜLIK, 0);
             }
+        }
+        public enum direction
+        {
+            up,
+            down,
+            left,
+            right
         }
     }
 }
