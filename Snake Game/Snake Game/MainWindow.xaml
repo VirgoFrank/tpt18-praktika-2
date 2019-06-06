@@ -8,24 +8,24 @@
         Title="Snake Game" ResizeMode="NoResize" 
         SizeToContent="WidthAndHeight" Topmost="True" KeyDown="Window_KeyDown">
     <Grid Name="mygrid">
-        <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="391*"/>
-            <ColumnDefinition Width="5*"/>
-        </Grid.ColumnDefinitions>
+        
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
             <RowDefinition Height="Auto"/>
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
-            <Label Name="lbldirection">
+            <Label Name="lbldirection" FontWeight="Bold">
+            </Label>
+            <Label Name= "lblGameStatus" FontWeight="Bold"></Label>
+            <Label Name ="score" FontWeight="Bold">
+                
             </Label>
 
         </StackPanel>
-        <Canvas Grid.Row="1" Background="Green" Grid.RowSpan="2" Grid.ColumnSpan="2" Name="canvas" Height="450" Width="800">
-        </Canvas>
-        <Canvas>
+        
+            <Canvas Grid.Row="1" Background="Green"  Name="canvas" Height="450" Width="800">
             <Rectangle Height="50" Width="50" Stroke="Black" StrokeThickness="10" Fill="Red"
-                       Name="RISTKÜLIK" Canvas.Top="25" Canvas.Left="10"/>
+                       Name="RISTKÜLIK" Canvas.Top="25" Canvas.Left="10" Panel.ZIndex="10"/>
 
 
         </Canvas>

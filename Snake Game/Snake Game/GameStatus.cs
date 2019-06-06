@@ -4,13 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SnakeGame
+namespace Snake_Game
 {
-    public enum Direction
+    public enum GameStatus
     {
-        Up,
-        Down,
-        Left,
-        Right
+        Notstatus,
+        Ongoing,
+        GameOver
+
     }
 }

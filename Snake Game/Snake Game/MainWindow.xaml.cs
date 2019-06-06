@@ -21,34 +21,88 @@ namespace Snake_Game
     /// </summary>
     public partial class MainWindow : Window
     {
-
+        int Score = 0;
         Random rnd = new Random();
         Rectangle tile = new Rectangle();
-        double cellsize = 50;
-        double cellcount = 16;
+       int cellsize = 50;
+        int cellcount = 16;
         Ellipse söök = new Ellipse();
-        DispatcherTimer timer;
-        Snake snake = new Snake; // millegi pärast visual studio ei leia neid classe üles
+        DispatcherTimer timer , Foodinterval;
+        Direction snakedirection;
+        GameStatus gameStatus;
+        int snakeRow;
+        int snakeCol;
+        double TimeInterval = 0.5;
+        List<int> sabapikkus = new List<int>();
+        
+        string lastDireaction = "right";
+        int count = 1;
 
         public MainWindow()
         {
             InitializeComponent();
             Drawboard();
-            snake = new Snake(RISTKÜLIK, cellsize, cellcount);
+          
+            Init();
+            Foodinterval = new DispatcherTimer();
+            toit();
+            if (MessageBox.Show("Do you want to Play on hardmode?", "Confirm",
+           MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
+            {
 
-            snake.Init();
-
+                Foodinterval.Interval = TimeSpan.FromSeconds(4);
+                Foodinterval.Start();
+                TimeInterval = 0.25;
+            }
             timer = new DispatcherTimer();
-            timer.Interval = TimeSpan.FromSeconds(2);
+           
+            timer.Interval = TimeSpan.FromSeconds(TimeInterval);
+            Foodinterval.Tick += Foodint;
             timer.Tick += Timer_Tick;
             timer.Start();
+           
 
             Canvas.SetLeft(RISTKÜLIK, 0);
             Canvas.SetTop(RISTKÜLIK, 0);
+            ChangeGameStatus(GameStatus.Ongoing);
+           
+
+
+        }
+        private void Foodint(object sender, EventArgs e)
+        {
+
+            int top = rnd.Next(8);
+            int left = rnd.Next(16);
+            Canvas.SetTop(söök, top * 50);
+            Canvas.SetLeft(söök, left * 50);
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
-            snake.Move();
+            MoveSnake();
+
+        }
+        private void ChangeGameStatus(GameStatus NewGameStatus)
+        {
+            gameStatus = NewGameStatus;
+            lblGameStatus.Content =
+                $"Status: {gameStatus}";
+        }
+
+        private void toit()
+        {
+            söök.Width = cellsize;
+            söök.Height = cellsize;
+            söök.Fill = Brushes.Red;
+
+            int top = rnd.Next(8);
+            int left = rnd.Next(16);
+            Canvas.SetTop(söök, top * 50);
+            Canvas.SetLeft(söök, left * 50);
+           
+            
+
+            canvas.Children.Add(söök);
         }
 
         public void Drawboard()
@@ -95,66 +149,129 @@ namespace Snake_Game
         }
         */
 
+        private void Init()
+        {
+            int index = cellcount / 2;
+            int snakerow = index, snakecol = 0;
+            RISTKÜLIK.Height = cellsize;
+            RISTKÜLIK.Width = cellsize;
+            double coord = cellcount * cellsize / 2;
+            Setshape(RISTKÜLIK, snakerow, snakecol);
+            ChangeDirection(Direction.right);
+            ChangeGameStatus(GameStatus.Ongoing);
+            Canvas.SetLeft(RISTKÜLIK, 0);
+            Canvas.SetTop(RISTKÜLIK, 0);
 
+        }
+        private void Setshape(Shape shape, int row, int col)
+        {
+            double top = row * cellsize;
+            double left = col * cellsize;
+
+            Canvas.SetTop(shape, top);
+            Canvas.SetLeft(shape, left);
+
+        }
+        private void ChangeDirection(Direction newDirection)
+        {
+            snakedirection = newDirection;
+            lbldirection.Content = $"direction: {newDirection}";
+        }
+
+        private void MoveSnake()
+        {
+            Saba();
+            count++;
+            switch (snakedirection)
+            {
+                case Direction.up:
+                    snakeRow--;
+                    break;
+                case Direction.down:
+                    snakeRow++;
+                    break;
+                case Direction.left:
+                    snakeCol--;
+                    break;
+                case Direction.right:
+                    snakeCol++;
+                    break;
+
+            }
+           
+           
+            if (snakeRow < 0 || snakeRow >=9 ||
+                snakeCol < 0 || snakeCol >= cellcount)
+            {
+                ChangeGameStatus(GameStatus.GameOver);
+                MessageBox.Show("game over");
+                Canvas.SetLeft(RISTKÜLIK, 0);
+                Canvas.SetTop(RISTKÜLIK, 0);
+                ChangeDirection(Direction.right);
+                Score = 0;
+                snakeCol = 0;
+                snakeRow = 0;
+                score.Content = $" Score: {Score}";
+            }
+             Setshape(RISTKÜLIK, snakeRow, snakeCol);
+           
+            if (Canvas.GetLeft(söök) == Canvas.GetLeft(RISTKÜLIK) && Canvas.GetTop(söök) == Canvas.GetTop(RISTKÜLIK))
+            {
+
+                int top = rnd.Next(8);
+                int left = rnd.Next(16);
+                Canvas.SetTop(söök, top * 50);
+                Canvas.SetLeft(söök, left * 50);
+                Score++;
+                score.Content = $" Score: {Score}";
+                Foodinterval.Interval = TimeSpan.FromSeconds(4);
+               
+               
+
+            }
+        }
+        private void Saba()
+        {
+            
+            Rectangle saba = new Rectangle();
+            saba.Width = cellsize;
+            saba.Height = cellsize;
+            Canvas.SetLeft(saba, Canvas.GetLeft(RISTKÜLIK));
+            Canvas.SetTop(saba, Canvas.GetTop(RISTKÜLIK));
+           
+            saba.Fill = Brushes.Blue;
+            
+            canvas.Children.Add(saba);
+            
+
+        }
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             Direction direction;
             switch (e.Key)
             {
+
                 case Key.Up:
-                    direction = Direction.Up;
+                    direction = Direction.up;
                     break;
                 case Key.Down:
-                    direction = Direction.Down;
+                    direction = Direction.down;
                     break;
                 case Key.Left:
-                    direction = Direction.Left;
+                    direction = Direction.left;
                     break;
                 case Key.Right:
-                    direction = Direction.Right;
+                    direction = Direction.right;
                     break;
                 default:
-
-/*---kodutöö---->*/ if (Canvas.GetTop(RISTKÜLIK) < 0 || Canvas.GetTop(RISTKÜLIK) > 400 || Canvas.GetLeft(RISTKÜLIK) > 750 
-                        || Canvas.GetLeft(RISTKÜLIK) < 0 || e.Key == Key.R) // Saadab ussi vasakule üless nurka
-                    {
-                        Canvas.SetLeft(RISTKÜLIK, 0);
-                        Canvas.SetTop(RISTKÜLIK, 10);
-
-                    }
+                   
                     return;
-                    /*
-                    if (Canvas.GetLeft(RISTKÜLIK) == Canvas.GetLeft(söök) && Canvas.GetTop(RISTKÜLIK) == Canvas.GetTop(söök))
-                        söök.Fill = Brushes.Black;
-
-
-                    // if (Canvas.GetLeft(RISTKÜLIK) == )
-                    */
-                    
-                  
-                    
-                    /*
-                    if (Canvas.GetTop(RISTKÜLIK) < 0)
-                    {
-                        Canvas.SetTop(RISTKÜLIK, 400);
-                    }
-                    if (Canvas.GetTop(RISTKÜLIK) > 400)
-                    {
-                        Canvas.SetTop(RISTKÜLIK, 0);
-                    }
-                    if (Canvas.GetLeft(RISTKÜLIK) < 0)
-                    {
-                        Canvas.SetLeft(RISTKÜLIK, 750);
-                    }
-                    if (Canvas.GetLeft(RISTKÜLIK) > 750)
-                    {
-                        Canvas.SetLeft(RISTKÜLIK, 0);
-                    }*/
             }
+            ChangeDirection(direction);
         }
 
-        public enum direction
+        public enum Direction
         {
             up,
             down,
