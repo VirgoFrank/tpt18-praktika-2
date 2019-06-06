@@ -34,8 +34,7 @@ namespace Snake_Game
         int snakeCol;
         double TimeInterval = 0.5;
         List<int> sabapikkus = new List<int>();
-        
-        string lastDireaction = "right";
+        Direction direction;
         int count = 1;
 
         public MainWindow()
@@ -126,29 +125,6 @@ namespace Snake_Game
                 }
             }
         }
-        /*
-        private void toit()
-        {
-
-
-
-            söök.Width = cellsize;
-            söök.Height = cellsize;
-            söök.Fill = Brushes.Red;
-
-            int top = rnd.Next(8);
-            int left = rnd.Next(16);
-            Canvas.SetTop(söök, top * 50);
-            Canvas.SetLeft(söök, left * 50);
-            int k = top * 50;
-
-            canvas.Children.Add(söök);
-
-
-
-        }
-        */
-
         private void Init()
         {
             int index = cellcount / 2;
@@ -180,7 +156,7 @@ namespace Snake_Game
 
         private void MoveSnake()
         {
-            Saba();
+           
             count++;
             switch (snakedirection)
             {
@@ -217,7 +193,8 @@ namespace Snake_Game
            
             if (Canvas.GetLeft(söök) == Canvas.GetLeft(RISTKÜLIK) && Canvas.GetTop(söök) == Canvas.GetTop(RISTKÜLIK))
             {
-
+                Saba();
+               
                 int top = rnd.Next(8);
                 int left = rnd.Next(16);
                 Canvas.SetTop(söök, top * 50);
@@ -234,10 +211,11 @@ namespace Snake_Game
         {
             
             Rectangle saba = new Rectangle();
-            saba.Width = cellsize;
-            saba.Height = cellsize;
             Canvas.SetLeft(saba, Canvas.GetLeft(RISTKÜLIK));
             Canvas.SetTop(saba, Canvas.GetTop(RISTKÜLIK));
+            saba.Width = cellsize;
+            saba.Height = cellsize;
+           
            
             saba.Fill = Brushes.Blue;
             
@@ -248,24 +226,35 @@ namespace Snake_Game
 
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
-            Direction direction;
+            
+            
             switch (e.Key)
             {
-
                 case Key.Up:
-                    direction = Direction.up;
+                    if(direction == Direction.down)
+                        direction = Direction.down;
+                    else
+                        direction = Direction.up;
                     break;
                 case Key.Down:
-                    direction = Direction.down;
+                    if (direction == Direction.up)
+                        direction = Direction.up;
+                    else
+                        direction = Direction.down;
                     break;
                 case Key.Left:
-                    direction = Direction.left;
-                    break;
+                    if (direction == Direction.right)
+                        direction = Direction.right;
+                    else
+                        direction = Direction.left;
+                        break;
                 case Key.Right:
-                    direction = Direction.right;
+                    if (direction == Direction.left)
+                        direction = Direction.left;
+                    else
+                        direction = Direction.right;
                     break;
                 default:
-                   
                     return;
             }
             ChangeDirection(direction);
