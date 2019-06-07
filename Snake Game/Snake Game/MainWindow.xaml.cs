@@ -30,21 +30,27 @@ namespace Snake_Game
         DispatcherTimer timer , Foodinterval;
         Direction snakedirection;
         GameStatus gameStatus;
-        int snakeRow;
-        int snakeCol;
+        int pikkus = 3;
         double TimeInterval = 0.5;
         List<int> sabapikkus = new List<int>();
         Direction direction;
-        int count = 1;
+       
+        int snakeHeadRow;
+        int snakeHeadCol;
+        LinkedList<Rectangle> snakeparts = new LinkedList<Rectangle>();
 
         public MainWindow()
         {
             InitializeComponent();
             Drawboard();
-          
+           
             Init();
+            snakeHeadCol = 2;
+            snakeHeadRow = 2;
+
             Foodinterval = new DispatcherTimer();
             toit();
+            
             if (MessageBox.Show("Do you want to Play on hardmode?", "Confirm",
            MessageBoxButton.YesNo, MessageBoxImage.Question) == MessageBoxResult.Yes)
             {
@@ -53,20 +59,14 @@ namespace Snake_Game
                 Foodinterval.Start();
                 TimeInterval = 0.25;
             }
+            
             timer = new DispatcherTimer();
            
             timer.Interval = TimeSpan.FromSeconds(TimeInterval);
             Foodinterval.Tick += Foodint;
             timer.Tick += Timer_Tick;
             timer.Start();
-           
-
-            Canvas.SetLeft(RISTKÜLIK, 0);
-            Canvas.SetTop(RISTKÜLIK, 0);
             ChangeGameStatus(GameStatus.Ongoing);
-           
-
-
         }
         private void Foodint(object sender, EventArgs e)
         {
@@ -75,6 +75,7 @@ namespace Snake_Game
             int left = rnd.Next(16);
             Canvas.SetTop(söök, top * 50);
             Canvas.SetLeft(söök, left * 50);
+          
         }
         private void Timer_Tick(object sender, EventArgs e)
         {
@@ -127,18 +128,49 @@ namespace Snake_Game
         }
         private void Init()
         {
-            int index = cellcount / 2;
-            int snakerow = index, snakecol = 0;
-            RISTKÜLIK.Height = cellsize;
-            RISTKÜLIK.Width = cellsize;
-            double coord = cellcount * cellsize / 2;
-            Setshape(RISTKÜLIK, snakerow, snakecol);
-            ChangeDirection(Direction.right);
-            ChangeGameStatus(GameStatus.Ongoing);
-            Canvas.SetLeft(RISTKÜLIK, 0);
-            Canvas.SetTop(RISTKÜLIK, 0);
+
+            int index = 2;
+            for (int i = 0; i < pikkus; i++)
+            {
+                
+                int row = index;
+                int col = index;
+                Rectangle r = new Rectangle();
+                r.Tag = new Location(row, col);
+                r.Width = cellsize;
+                r.Height = cellsize;
+                r.Fill = Brushes.Red;
+                Panel.SetZIndex(r, 10);
+                Setshape(r, index, index + i);
+                canvas.Children.Add(r);
+                snakeparts.AddLast(r);
+
+            }
+            ChangeDirection(Direction.down);
+            
 
         }
+        private void saba()
+        {
+          
+            int index = 2;
+            int row = index;
+            int col = index;
+            Rectangle saba = new Rectangle();
+            saba.Tag = new Location(row, col);
+            saba.Width = cellsize;
+            saba.Height = cellsize;
+           
+            Setshape(saba, snakeHeadRow, snakeHeadCol);
+            Panel.SetZIndex(saba, 10);
+            canvas.Children.Add(saba);
+            snakeparts.AddLast(saba);
+            saba.Fill = Brushes.Red;
+            
+         
+            
+        }
+
         private void Setshape(Shape shape, int row, int col)
         {
             double top = row * cellsize;
@@ -156,45 +188,44 @@ namespace Snake_Game
 
         private void MoveSnake()
         {
-           
-            count++;
+            Rectangle currentHead = snakeparts.First.Value;
+            Location currentHeadLocation =
+                (Location)currentHead.Tag;
+
+            int newHeadRow = currentHeadLocation.Row;
+            int newHeadCol = currentHeadLocation.Col;
+
+            Rectangle newHead = snakeparts.Last.Value;
+            snakeparts.RemoveLast();
+
+            Setshape(newHead, snakeHeadRow, snakeHeadCol);
+
+
+
             switch (snakedirection)
             {
                 case Direction.up:
-                    snakeRow--;
+                    snakeHeadRow--;
+                    snakeparts.AddFirst(newHead);
                     break;
                 case Direction.down:
-                    snakeRow++;
+                    snakeHeadRow++;
+                    snakeparts.AddFirst(newHead);
                     break;
                 case Direction.left:
-                    snakeCol--;
+                    snakeHeadCol--;
+                    snakeparts.AddFirst(newHead);
                     break;
                 case Direction.right:
-                    snakeCol++;
+                    snakeHeadCol++;
+                    snakeparts.AddFirst(newHead);
                     break;
 
             }
-           
-           
-            if (snakeRow < 0 || snakeRow >=9 ||
-                snakeCol < 0 || snakeCol >= cellcount)
+            if (Canvas.GetLeft(söök) == Canvas.GetLeft(newHead) && Canvas.GetTop(söök) == Canvas.GetTop(newHead))
             {
-                ChangeGameStatus(GameStatus.GameOver);
-                MessageBox.Show("game over");
-                Canvas.SetLeft(RISTKÜLIK, 0);
-                Canvas.SetTop(RISTKÜLIK, 0);
-                ChangeDirection(Direction.right);
-                Score = 0;
-                snakeCol = 0;
-                snakeRow = 0;
-                score.Content = $" Score: {Score}";
-            }
-             Setshape(RISTKÜLIK, snakeRow, snakeCol);
-           
-            if (Canvas.GetLeft(söök) == Canvas.GetLeft(RISTKÜLIK) && Canvas.GetTop(söök) == Canvas.GetTop(RISTKÜLIK))
-            {
-                Saba();
-               
+
+
                 int top = rnd.Next(8);
                 int left = rnd.Next(16);
                 Canvas.SetTop(söök, top * 50);
@@ -202,28 +233,42 @@ namespace Snake_Game
                 Score++;
                 score.Content = $" Score: {Score}";
                 Foodinterval.Interval = TimeSpan.FromSeconds(4);
-               
-               
+                pikkus++;
+                saba();
+
 
             }
-        }
-        private void Saba()
-        {
-            
-            Rectangle saba = new Rectangle();
-            Canvas.SetLeft(saba, Canvas.GetLeft(RISTKÜLIK));
-            Canvas.SetTop(saba, Canvas.GetTop(RISTKÜLIK));
-            saba.Width = cellsize;
-            saba.Height = cellsize;
-           
-           
-            saba.Fill = Brushes.Blue;
-            
-            canvas.Children.Add(saba);
-            
+            if (snakeHeadRow < 0 || snakeHeadRow >= 9 ||
+                snakeHeadCol < 0 || snakeHeadCol >= cellcount)
+            {
+                ChangeGameStatus(GameStatus.GameOver);
+                MessageBox.Show("game over");
 
-        }
 
+                timer.Stop();
+                pikkus = 0;
+                Score = 0;
+                snakeHeadCol = 2;
+                snakeHeadRow = 2;
+                score.Content = $" Score: {Score}";
+                ChangeDirection(Direction.right);
+            }
+
+            foreach (Rectangle r in snakeparts)
+            {
+
+                Location location = (Location)r.Tag;
+                if (location.Row == newHeadRow &&
+                   location.Col == newHeadCol)
+                {
+                    ChangeGameStatus(GameStatus.GameOver);
+                    
+                    return;
+                }
+
+               
+            }
+        }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
             
@@ -259,6 +304,17 @@ namespace Snake_Game
             }
             ChangeDirection(direction);
         }
+        
+        private void SetShape(
+           Shape shape, int row, int col)
+        {
+            double top = row * cellsize;
+            double left = col * cellsize;
+
+            Canvas.SetTop(shape, top);
+            Canvas.SetLeft(shape, left);
+        }
+       
 
         public enum Direction
         {

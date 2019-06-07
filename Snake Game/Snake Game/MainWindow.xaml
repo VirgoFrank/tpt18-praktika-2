@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:Snake_Game"
         mc:Ignorable="d"
         Title="Snake Game" ResizeMode="NoResize" 
-        SizeToContent="WidthAndHeight" Topmost="True" KeyDown="Window_KeyDown">
+        SizeToContent="WidthAndHeight" KeyDown="Window_KeyDown">
     <Grid Name="mygrid">
         
         <Grid.RowDefinitions>
@@ -24,9 +24,7 @@
         </StackPanel>
         
             <Canvas Grid.Row="1" Background="Green"  Name="canvas" Height="450" Width="800">
-            <Rectangle Height="50" Width="50" Stroke="Black" StrokeThickness="10" Fill="Red"
-                       Name="RISTKÜLIK" Canvas.Top="25" Canvas.Left="10" Panel.ZIndex="10"/>
-
+            
 
         </Canvas>
     </Grid>
