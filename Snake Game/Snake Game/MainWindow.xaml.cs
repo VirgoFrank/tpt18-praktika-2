@@ -290,7 +290,7 @@ namespace Snake_Game
                     if (location.Row == newHeadRow &&
                        location.Col == newHeadCol)
                     {
-                        ChangeGameStatus(GameStatus.GameOver);
+                       // ChangeGameStatus(GameStatus.GameOver);
 
                         return;
                     }
