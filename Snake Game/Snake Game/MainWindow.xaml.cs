@@ -34,7 +34,7 @@ namespace Snake_Game
         double TimeInterval = 0.5;
         List<int> sabapikkus = new List<int>();
         Direction direction;
-       
+        int startingTime = 0;
         int snakeHeadRow;
         int snakeHeadCol;
         LinkedList<Rectangle> snakeparts = new LinkedList<Rectangle>();
@@ -65,8 +65,9 @@ namespace Snake_Game
             timer.Interval = TimeSpan.FromSeconds(TimeInterval);
             Foodinterval.Tick += Foodint;
             timer.Tick += Timer_Tick;
-            timer.Start();
+           timer.Start();
             ChangeGameStatus(GameStatus.Ongoing);
+            
         }
         private void Foodint(object sender, EventArgs e)
         {
@@ -80,7 +81,7 @@ namespace Snake_Game
         private void Timer_Tick(object sender, EventArgs e)
         {
             MoveSnake();
-
+            startingTime++;
         }
         private void ChangeGameStatus(GameStatus NewGameStatus)
         {
@@ -128,25 +129,26 @@ namespace Snake_Game
         }
         private void Init()
         {
-
-            int index = 2;
-            for (int i = 0; i < pikkus; i++)
+            int index =  2;
+            for (int i = 0; i < 3; i++)
             {
-                
                 int row = index;
-                int col = index;
+                int col = index + i;
+
+
                 Rectangle r = new Rectangle();
                 r.Tag = new Location(row, col);
                 r.Width = cellsize;
                 r.Height = cellsize;
                 r.Fill = Brushes.Red;
                 Panel.SetZIndex(r, 10);
-                Setshape(r, index, index + i);
-                canvas.Children.Add(r);
+                Setshape(r, index, index);
                 snakeparts.AddLast(r);
+                canvas.Children.Add(r);
+            }  
 
-            }
-            ChangeDirection(Direction.down);
+            
+            ChangeDirection(Direction.right);
             
 
         }
@@ -182,13 +184,38 @@ namespace Snake_Game
         }
         private void ChangeDirection(Direction newDirection)
         {
+            if (snakedirection == Direction.left &&
+                direction == Direction.right)
+            {
+                return;
+            }
+
+            if (snakedirection == Direction.right &&
+                direction == Direction.left)
+            {
+                return;
+            }
+
+            if (snakedirection == Direction.up &&
+                direction == Direction.down)
+            {
+                return;
+            }
+
+            if (snakedirection == Direction.down &&
+                direction == Direction.up)
+            {
+                return;
+            }
             snakedirection = newDirection;
             lbldirection.Content = $"direction: {newDirection}";
         }
 
         private void MoveSnake()
         {
+
             Rectangle currentHead = snakeparts.First.Value;
+
             Location currentHeadLocation =
                 (Location)currentHead.Tag;
 
@@ -196,11 +223,6 @@ namespace Snake_Game
             int newHeadCol = currentHeadLocation.Col;
 
             Rectangle newHead = snakeparts.Last.Value;
-            snakeparts.RemoveLast();
-
-            Setshape(newHead, snakeHeadRow, snakeHeadCol);
-
-
 
             switch (snakedirection)
             {
@@ -222,6 +244,12 @@ namespace Snake_Game
                     break;
 
             }
+            snakeparts.RemoveLast();
+
+            Setshape(newHead, snakeHeadRow, snakeHeadCol);
+
+
+
             if (Canvas.GetLeft(söök) == Canvas.GetLeft(newHead) && Canvas.GetTop(söök) == Canvas.GetTop(newHead))
             {
 
@@ -253,21 +281,24 @@ namespace Snake_Game
                 score.Content = $" Score: {Score}";
                 ChangeDirection(Direction.right);
             }
-
-            foreach (Rectangle r in snakeparts)
+            if ( startingTime > 4)
             {
-
-                Location location = (Location)r.Tag;
-                if (location.Row == newHeadRow &&
-                   location.Col == newHeadCol)
+                foreach (Rectangle r in snakeparts)
                 {
-                    ChangeGameStatus(GameStatus.GameOver);
-                    
-                    return;
-                }
 
-               
+                    Location location = (Location)r.Tag;
+                    if (location.Row == newHeadRow &&
+                       location.Col == newHeadCol)
+                    {
+                        ChangeGameStatus(GameStatus.GameOver);
+
+                        return;
+                    }
+
+
+                }
             }
+           
         }
         private void Window_KeyDown(object sender, KeyEventArgs e)
         {
@@ -276,27 +307,17 @@ namespace Snake_Game
             switch (e.Key)
             {
                 case Key.Up:
-                    if(direction == Direction.down)
-                        direction = Direction.down;
-                    else
                         direction = Direction.up;
                     break;
                 case Key.Down:
-                    if (direction == Direction.up)
-                        direction = Direction.up;
-                    else
                         direction = Direction.down;
                     break;
                 case Key.Left:
-                    if (direction == Direction.right)
-                        direction = Direction.right;
-                    else
+                   
                         direction = Direction.left;
-                        break;
+                    break;
                 case Key.Right:
-                    if (direction == Direction.left)
-                        direction = Direction.left;
-                    else
+
                         direction = Direction.right;
                     break;
                 default:
@@ -305,15 +326,7 @@ namespace Snake_Game
             ChangeDirection(direction);
         }
         
-        private void SetShape(
-           Shape shape, int row, int col)
-        {
-            double top = row * cellsize;
-            double left = col * cellsize;
-
-            Canvas.SetTop(shape, top);
-            Canvas.SetLeft(shape, left);
-        }
+     
        
 
         public enum Direction
